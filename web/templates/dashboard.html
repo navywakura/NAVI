@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es" class="h-full bg-slate-950">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N.A.V.I // Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}">
+</head>
+<body class="min-h-full text-slate-100 p-6 md:p-10">
+  <header class="max-w-6xl mx-auto flex items-center justify-between mb-10">
+    <div>
+      <div class="text-xs tracking-[.35em] text-cyan-400">SYSTEM // N.A.V.I CORE</div>
+      <h1 class="text-3xl font-semibold mt-2">Guild Control Matrix</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-sm text-slate-400">{{ session.username }}</span>
+      <a class="link" href="/logout">LOGOUT</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {% for guild in guilds %}
+      <article class="panel p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-xs text-slate-500 font-mono">GUILD_ID {{ guild.id }}</p>
+            <h2 class="text-xl font-semibold mt-2">{{ guild.name }}</h2>
+          </div>
+          {% if guild.bot_present %}
+            <span class="status status-ok">ONLINE</span>
+          {% else %}
+            <span class="status status-off">NOT INSTALLED</span>
+          {% endif %}
+        </div>
+        <div class="mt-6">
+          {% if guild.bot_present %}
+            <a class="button block text-center" href="/guilds/{{ guild.id }}">OPEN_CONFIG</a>
+          {% else %}
+            <p class="text-sm text-slate-500">Instala el bot en este servidor antes de habilitar la configuración.</p>
+          {% endif %}
+        </div>
+      </article>
+    {% else %}
+      <div class="panel p-8 md:col-span-2 xl:col-span-3">
+        No se detectaron servidores administrables para esta cuenta.
+      </div>
+    {% endfor %}
+  </main>
+</body>
+</html>

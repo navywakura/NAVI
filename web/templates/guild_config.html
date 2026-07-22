@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es" class="h-full bg-slate-950">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>N.A.V.I // {{ guild.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}">
+</head>
+<body class="min-h-full text-slate-100 p-6 md:p-10">
+  <header class="max-w-5xl mx-auto mb-8">
+    <a class="link" href="/dashboard">← GUILD_MATRIX</a>
+    <div class="text-xs tracking-[.35em] text-cyan-400 mt-6">CONFIG NODE // {{ guild.id }}</div>
+    <h1 class="text-3xl font-semibold mt-2">{{ guild.name }}</h1>
+    {% if saved %}<div class="success mt-5">CONFIGURATION_COMMITTED</div>{% endif %}
+  </header>
+
+  <form class="max-w-5xl mx-auto space-y-6" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <section class="panel p-6">
+      <h2 class="section-title">Module switches</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+        {% for field, label in [
+          ('economy_enabled','Economy'), ('levels_enabled','Levels'),
+          ('welcomes_enabled','Welcomes'), ('automessages_enabled','Auto messages'),
+          ('fun_enabled','Fun'), ('animals_enabled','Animals'),
+          ('games_enabled','Games'), ('social_enabled','Social'),
+          ('roleplay_enabled','Roleplay'), ('images_enabled','Image tools'),
+          ('tags_enabled','Tags'), ('moderation_enabled','Moderation'),
+          ('reminders_enabled','Reminders / AFK'), ('ai_chat_enabled','AI chat')
+        ] %}
+          <label class="toggle-row">
+            <span>{{ label }}</span>
+            <input type="checkbox" name="{{ field }}" {% if config[field] %}checked{% endif %}>
+          </label>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel p-6 grid md:grid-cols-2 gap-5">
+      <h2 class="section-title md:col-span-2">Economy protocol</h2>
+      <label>Currency<input name="currency_name" value="{{ config.currency_name }}" required maxlength="32"></label>
+      <label>Prefix<input name="prefix" value="{{ config.prefix }}" required maxlength="5"></label>
+      <label>Daily amount<input type="number" name="daily_amount" value="{{ config.daily_amount }}" min="0"></label>
+      <label>Work min<input type="number" name="work_min_amount" value="{{ config.work_min_amount }}" min="0"></label>
+      <label>Work max<input type="number" name="work_max_amount" value="{{ config.work_max_amount }}" min="0"></label>
+    </section>
+
+    <section class="panel p-6 grid md:grid-cols-2 gap-5">
+      <h2 class="section-title md:col-span-2">XP protocol</h2>
+      <label>XP min/message<input type="number" name="xp_min" value="{{ config.xp_min }}" min="1"></label>
+      <label>XP max/message<input type="number" name="xp_max" value="{{ config.xp_max }}" min="1"></label>
+      <label>Cooldown seconds<input type="number" name="xp_cooldown_seconds" value="{{ config.xp_cooldown_seconds }}" min="5"></label>
+      <label>Voice XP/minute<input type="number" name="voice_xp_per_minute" value="{{ config.voice_xp_per_minute }}" min="0"></label>
+    </section>
+
+    <section class="panel p-6 grid md:grid-cols-2 gap-5">
+      <h2 class="section-title md:col-span-2">Welcome protocol</h2>
+      <label>Welcome channel
+        <select name="welcome_channel_id"><option value="">System/default</option>{% for channel in channels %}<option value="{{ channel.id }}" {% if config.welcome_channel_id == channel.id %}selected{% endif %}>#{{ channel.name }}</option>{% endfor %}</select>
+      </label>
+      <label>Goodbye channel
+        <select name="goodbye_channel_id"><option value="">System/default</option>{% for channel in channels %}<option value="{{ channel.id }}" {% if config.goodbye_channel_id == channel.id %}selected{% endif %}>#{{ channel.name }}</option>{% endfor %}</select>
+      </label>
+      <label class="md:col-span-2">Welcome message<textarea name="welcome_message" rows="3">{{ config.welcome_message }}</textarea></label>
+      <label class="md:col-span-2">Goodbye message<textarea name="goodbye_message" rows="3">{{ config.goodbye_message }}</textarea></label>
+      <p class="md:col-span-2 text-sm text-slate-500">Variables: {user}, {server}, {count}</p>
+    </section>
+
+
+    <section class="panel p-6 grid md:grid-cols-2 gap-5">
+      <h2 class="section-title md:col-span-2">Social protocol</h2>
+      <label class="toggle-row"><span>Confessions enabled</span><input type="checkbox" name="confessions_enabled" {% if config.confessions_enabled %}checked{% endif %}></label>
+      <label class="toggle-row"><span>Anonymous confessions</span><input type="checkbox" name="anonymous_confessions" {% if config.anonymous_confessions %}checked{% endif %}></label>
+      <label class="toggle-row"><span>Roleplay GIFs</span><input type="checkbox" name="social_gifs_enabled" {% if config.social_gifs_enabled %}checked{% endif %}></label>
+      <label>Social cooldown (seconds)<input type="number" name="social_cooldown_seconds" value="{{ config.social_cooldown_seconds }}" min="1" max="300"></label>
+      <label>Confession channel
+        <select name="confession_channel_id"><option value="">Disabled / not selected</option>{% for channel in channels %}<option value="{{ channel.id }}" {% if config.confession_channel_id == channel.id %}selected{% endif %}>#{{ channel.name }}</option>{% endfor %}</select>
+      </label>
+      <label>Moderation log channel
+        <select name="modlog_channel_id"><option value="">No mod-log</option>{% for channel in channels %}<option value="{{ channel.id }}" {% if config.modlog_channel_id == channel.id %}selected{% endif %}>#{{ channel.name }}</option>{% endfor %}</select>
+      </label>
+    </section>
+
+    <section class="panel p-6 grid md:grid-cols-2 gap-5">
+      <h2 class="section-title md:col-span-2">AI protocol</h2>
+      <label>AI channel
+        <select name="ai_channel_id"><option value="">Mentions only</option>{% for channel in channels %}<option value="{{ channel.id }}" {% if config.ai_channel_id == channel.id %}selected{% endif %}>#{{ channel.name }}</option>{% endfor %}</select>
+      </label>
+      <label>Model override<input name="ai_model" value="{{ config.ai_model or '' }}" maxlength="100" placeholder="Use global OPENAI_MODEL"></label>
+      <label class="md:col-span-2">System prompt<textarea name="ai_system_prompt" rows="6">{{ config.ai_system_prompt }}</textarea></label>
+    </section>
+
+    <button class="button w-full md:w-auto" type="submit">COMMIT_CONFIGURATION</button>
+  </form>
+</body>
+</html>

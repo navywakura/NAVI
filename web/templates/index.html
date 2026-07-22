@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es" class="h-full bg-slate-950">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}">
+</head>
+<body class="min-h-full text-slate-100 grid place-items-center p-6">
+  <main class="panel max-w-xl w-full p-8">
+    <div class="text-xs tracking-[.35em] text-cyan-400 mb-5">SYSTEM // N.A.V.I CORE</div>
+    <h1 class="text-4xl font-semibold mb-3">Network Automated Virtual Intelligence</h1>
+    <p class="text-slate-400 mb-8">Acceso administrativo multi-tenant mediante Discord OAuth2.</p>
+    {% if error %}<div class="error mb-5">{{ error }}</div>{% endif %}
+    <a class="button block text-center" href="/login">AUTHENTICATE_WITH_DISCORD</a>
+  </main>
+</body>
+</html>
