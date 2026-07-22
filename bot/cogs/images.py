@@ -138,7 +138,7 @@ class ImagesCog(commands.Cog):
         await self._simple(ctx, "crop", attachment, user, x=x, y=y, width=width, height=height)
 
     @image.command(name="rotate", description="Rota una imagen.")
-    async def rotate(self, ctx: commands.Context, degrees: float = 90, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
+    async def rotate(self, ctx: commands.Context, degrees: float = 90.0, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
         await self._simple(ctx, "rotate", attachment, user, degrees=degrees)
 
     @image.command(name="flip", description="Voltea una imagen horizontal o verticalmente.")
@@ -154,11 +154,11 @@ class ImagesCog(commands.Cog):
         await self._simple(ctx, "invert", attachment, user)
 
     @image.command(name="blur", description="Aplica desenfoque gaussiano.")
-    async def blur(self, ctx: commands.Context, radius: float = 3, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
+    async def blur(self, ctx: commands.Context, radius: float = 3.0, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
         await self._simple(ctx, "blur", attachment, user, radius=radius)
 
     @image.command(name="sharpen", description="Aumenta la nitidez.")
-    async def sharpen(self, ctx: commands.Context, factor: float = 2, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
+    async def sharpen(self, ctx: commands.Context, factor: float = 2.0, attachment: discord.Attachment | None = None, user: discord.Member | None = None) -> None:
         await self._simple(ctx, "sharpen", attachment, user, factor=factor)
 
     @image.command(name="pixelate", description="Pixeliza una imagen.")
